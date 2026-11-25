@@ -13,6 +13,7 @@ public record ProductResponse(
         Integer currentStock,
         Integer minimumStock,
         boolean lowStock,
+        boolean active,
         Instant createdAt
 ) {
     public static ProductResponse fromEntity(Product product) {
@@ -24,6 +25,7 @@ public record ProductResponse(
                 product.getCurrentStock(),
                 product.getMinimumStock(),
                 product.isLowStock(),
+                Boolean.TRUE.equals(product.getActive()),
                 product.getCreatedAt()
         );
     }

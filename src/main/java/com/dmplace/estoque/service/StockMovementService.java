@@ -7,10 +7,11 @@ import com.dmplace.estoque.dto.StockMovementCreateRequest;
 import com.dmplace.estoque.dto.StockMovementResponse;
 import com.dmplace.estoque.repository.ProductRepository;
 import com.dmplace.estoque.repository.StockMovementRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -49,13 +50,11 @@ public class StockMovementService {
     }
 
     @Transactional(readOnly = true)
-    public List<StockMovementResponse> findByProductId(Long productId) {
+    public Page<StockMovementResponse> findByProductId(Long productId, Pageable pageable) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new NoSuchElementException("Product not found."));
 
-        return movementRepository.findByProductIdOrderByOccurredAtDesc(productId)
-                .stream()
-                .map(m -> StockMovementResponse.fromEntity(m, product.getCurrentStock()))
-                .toList();
+        return movementRepository.findByProductIdOrderByOccurredAtDesc(productId, pageable)
+                .map(m -> StockMovementResponse.fromEntity(m, product.getCurrentStock()));
     }
 }

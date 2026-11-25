@@ -27,6 +27,13 @@ public class Product {
     @Column(name = "minimum_stock", nullable = false)
     private Integer minimumStock = 0;
 
+    @Column(nullable = false)
+    private Boolean active = true;
+
+    @Version
+    @Column(nullable = false)
+    private Long version;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
@@ -39,6 +46,9 @@ public class Product {
         if (this.minimumStock == null) {
             this.minimumStock = 0;
         }
+        if (this.active == null) {
+            this.active = true;
+        }
     }
 
     public Product() {
@@ -50,9 +60,32 @@ public class Product {
         this.unitPrice = unitPrice;
         this.minimumStock = minimumStock;
         this.currentStock = 0;
+        this.active = true;
+    }
+
+    public void updateDetails(String name, BigDecimal unitPrice, Integer minimumStock, Boolean active) {
+        if (name != null && !name.isBlank()) {
+            this.name = name.trim();
+        }
+        if (unitPrice != null) {
+            this.unitPrice = unitPrice;
+        }
+        if (minimumStock != null) {
+            this.minimumStock = minimumStock;
+        }
+        if (active != null) {
+            this.active = active;
+        }
+    }
+
+    public void deactivate() {
+        this.active = false;
     }
 
     public void addStock(int quantity) {
+        if (!Boolean.TRUE.equals(this.active)) {
+            throw new IllegalStateException("Cannot register stock movement for an inactive product.");
+        }
         if (quantity <= 0) {
             throw new IllegalArgumentException("Stock inbound quantity must be greater than zero.");
         }
@@ -60,6 +93,9 @@ public class Product {
     }
 
     public void removeStock(int quantity) {
+        if (!Boolean.TRUE.equals(this.active)) {
+            throw new IllegalStateException("Cannot register stock movement for an inactive product.");
+        }
         if (quantity <= 0) {
             throw new IllegalArgumentException("Stock outbound quantity must be greater than zero.");
         }
@@ -84,5 +120,8 @@ public class Product {
     public void setCurrentStock(Integer currentStock) { this.currentStock = currentStock; }
     public Integer getMinimumStock() { return minimumStock; }
     public void setMinimumStock(Integer minimumStock) { this.minimumStock = minimumStock; }
+    public Boolean getActive() { return active; }
+    public void setActive(Boolean active) { this.active = active; }
+    public Long getVersion() { return version; }
     public Instant getCreatedAt() { return createdAt; }
 }
