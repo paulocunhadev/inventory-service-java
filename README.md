@@ -102,7 +102,7 @@ A aplicação estará disponível em `http://localhost:8080`.
 
 * \[x\] Configuração de variáveis de ambiente
 
-* \[ \] Controllers REST e tratamento global de exceções (`@RestControllerAdvice`)
+* \[x\] Controllers REST e tratamento global de exceções (`@RestControllerAdvice`)
 
 * \[ \] Testes unitários e de integração (JUnit 5 e Mockito)
 
